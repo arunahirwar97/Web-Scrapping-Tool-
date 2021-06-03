@@ -2,6 +2,7 @@ from django.shortcuts import render
 import requests
 import urllib.request
 import pandas as pd
+from bs4 import BeautifulSoup
 # Create your views here.
 def index(request):
     if request.method == 'POST':
@@ -66,15 +67,17 @@ def get_table_data(request):
 def get_heading_data(request):
     if request.method == 'POST':
         heading_tag = request.POST.get('url', None)
-        request = requests.get(heading_tag)
-        Soup = BeautifulSoup(request.text)
+        # request = requests.get(heading_tag)
+        html_page = urllib.request.urlopen(heading_tag)
+        Soup = BeautifulSoup(html_page)
         # creating a list of all common heading tags
         heading_tags = ["h1", "h2", "h3","h4"]
         head1 = []
         for tags in Soup.find_all(heading_tags):
             hh = tags.name + ' -> ' + tags.text.strip()
             head1.append(hh)
-
+            print(hh)
+        print(head1)
         return render(request,'get_heading_data.html',{'heading':head1})
     else:
         return render(request,'get_heading_data.html')
@@ -84,15 +87,16 @@ def get_heading_data(request):
 def get_paragraph_data(request):
     if request.method == 'POST':
         paragraph_tag = request.POST.get('url', None)
-        request = requests.get(paragraph_tag)
-        Soup = BeautifulSoup(request.text)
+        html_page = urllib.request.urlopen(paragraph_tag)
+        # request = requests.get(paragraph_tag)
+        Soup = BeautifulSoup(html_page)
         # creating a list of all common heading tags
         heading_tags = ["p", "span"]
         para = []
         for tags in Soup.find_all(heading_tags):
             pp = tags.name + ' -> ' + tags.text.strip()
-            para.append(hh)
-
+            para.append(pp)
+        print(para)
         return render(request,'get_paragraph_data.html',{'paragraph':para})
     else:
         return render(request,'get_paragraph_data.html')
@@ -101,14 +105,15 @@ def get_paragraph_data(request):
 def get_list_data(request):
     if request.method == 'POST':
         list_tag = request.POST.get('url', None)
-        request = requests.get(list_tag)
-        Soup = BeautifulSoup(request.text)
+        html_page = urllib.request.urlopen(list_tag)
+        # request = requests.get(list_tag)
+        Soup = BeautifulSoup(html_page)
         # creating a list of all common heading tags
-        heading_tags = ["li"]
+        heading_tags = ["li",'ul','ol']
         list = []
         for tags in Soup.find_all(heading_tags):
-            pp = tags.name + ' -> ' + tags.text.strip()
-            list.append(hh)
+            listtt = tags.name + ' -> ' + tags.text.strip()
+            list.append(listtt)
 
         return render(request,'get_list_data.html',{'lists':list})
     else:
