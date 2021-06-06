@@ -54,9 +54,19 @@ def all_img_links(request):
 def get_table_data(request):
     if request.method == 'POST':
         table_url = request.POST.get('url', None)
-        r = requests.get(table_url)
-        table = pd.read_html(r.text) # this parses all the tables in webpages to a list
-        tables = table[0]
+        # r = requests.get(table_url)
+        # table = pd.read_html(r.text) # this parses all the tables in webpages to a list
+        # tables = table[0]
+        html_page = urllib.request.urlopen(table_url)
+        Soup = BeautifulSoup(html_page)
+        # creating a list of all common heading tags
+        heading_tags = ["td"]
+        head1 = []
+        for tags in Soup.find_all(heading_tags):
+            hh = tags.name + ' -> ' + tags.text.strip()
+            head1.append(hh)
+            print(hh)
+        print(head1)
         return render(request,'get_table_data.html',{'tables':tables})
     else:
         return render(request,'get_table_data.html')
