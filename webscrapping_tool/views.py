@@ -61,12 +61,12 @@ def get_table_data(request):
         Soup = BeautifulSoup(html_page)
         # creating a list of all common heading tags
         heading_tags = ["td"]
-        head1 = []
+        tables = []
         for tags in Soup.find_all(heading_tags):
             hh = tags.name + ' -> ' + tags.text.strip()
-            head1.append(hh)
+            tables.append(hh)
             print(hh)
-        print(head1)
+        print(tables)
         return render(request,'get_table_data.html',{'tables':tables})
     else:
         return render(request,'get_table_data.html')
